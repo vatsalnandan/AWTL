@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Responsive Navigation</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    #navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      transition: top 0.5s, background-color 0.5s;
+    }
+
+    #navbar h1 {
+      margin: 0;
+    }
+
+    #content {
+      padding: 80px 20px 2000px; /* Add some padding to create scroll space */
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    h2 {
+        font-size: small;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar">
+    <h1>Scrolling Animation Effect</h1>
+  </div>
+
+  <div id="content">
+    <!-- Your webpage content goes here -->
+    <h1>Welcome to Your Website</h1>
+    <h2> Scroll to see taskbar animation </h2>
+    <!-- ... -->
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      var previousScroll = 0;
+      var navbar = $('#navbar');
+
+      $(window).scroll(function () {
+        var currentScroll = $(this).scrollTop();
+
+        // Check the scroll direction
+        if (currentScroll > previousScroll) {
+          // Scrolling down
+          navbar.css({
+            'top': '-80px',
+            'background-color': 'transparent'
+          });
+        } else {
+          // Scrolling up
+          navbar.css({
+            'top': '0',
+            'background-color': '#333'
+          });
+        }
+
+        previousScroll = currentScroll;
+      });
+    });
+  </script>
+</body>
+</html>
