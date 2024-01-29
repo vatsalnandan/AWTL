@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+    }
+
+    .board {
+      display: flex;
+    }
+
+    .column {
+      flex: 1;
+      margin: 10px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f4f4f4;
+    }
+
+    .task {
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<div class="board" id="board">
+  <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>To Do</h3>
+  </div>
+  <div class="column" id="inProgress" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>In Progress</h3>
+  </div>
+  <div class="column" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>Done</h3>
+  </div>
+</div>
+
+<script>
+  // Sample tasks
+  const tasks = [
+    { id: 1, content: 'Task 1' },
+    { id: 2, content: 'Task 2' },
+    { id: 3, content: 'Task 3' }
+  ];
+
+  // Initialize boards
+  const boards = {
+    todo: document.getElementById('todo'),
+    inProgress: document.getElementById('inProgress'),
+    done: document.getElementById('done')
+  };
+
+  // Initialize tasks
+  tasks.forEach(task => {
+    const taskElement = createTaskElement(task);
+    boards.todo.appendChild(taskElement);
+  });
+
+  function allowDrop(event) {
+    event.preventDefault();
+  }
+
+  function drag(event) {
+    event.dataTransfer.setData('text/plain', event.target.id);
+  }
+
+  function drop(event) {
+    event.preventDefault();
+    const taskId = event.dataTransfer.getData('text/plain');
+    const taskElement = document.getElementById(taskId);
+
+    // Find the target board
+    let targetBoard = event.target;
+    while (targetBoard && !targetBoard.classList.contains('column')) {
+      targetBoard = targetBoard.parentElement;
+    }
+
+    if (targetBoard) {
+      targetBoard.appendChild(taskElement);
+
+      // Update the task status in local storage
+      const taskStatus = targetBoard.id;
+      updateTaskStatus(taskId, taskStatus);
+    }
+  }
+
+  function createTaskElement(task) {
+    const taskElement = document.createElement('div');
+    taskElement.id = `task-${task.id}`;
+    taskElement.className = 'task';
+    taskElement.draggable = true;
+    taskElement.addEventListener('dragstart', drag);
+
+    const taskContent = document.createTextNode(task.content);
+    taskElement.appendChild(taskContent);
+
+    return taskElement;
+  }
+
+  function updateTaskStatus(taskId, newStatus) {
+    // Update the task status in local storage
+    // Here, you can use a more sophisticated storage mechanism
+    const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const updatedTasks = storedTasks.map(task => {
+      if (task.id === parseInt(taskId.substring(5))) {
+        task.status = newStatus;
+      }
+      return task;
+    });
+
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+  }
+</script>
+
+</body>
+</html>
